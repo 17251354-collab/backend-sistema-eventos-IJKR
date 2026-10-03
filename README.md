@@ -11,6 +11,9 @@ API REST para gerenciamento de eventos acadêmicos. Implementação completa dos
 ## Integrantes
 Igor Philipo, João Vinicius, Kamylle da Silva, Roselí Maria — Orientador: Victor Henrique — Recife 2026
 
+## Repositório
+https://github.com/17251354-collab/backend-sistema-eventos-IJKR
+
 ## Quick Start
 
 ```bash
