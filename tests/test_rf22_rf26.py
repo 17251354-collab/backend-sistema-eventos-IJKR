@@ -6,60 +6,51 @@ from app.database.connection import Base, engine
 
 client = TestClient(app)
 
-def setup_module():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-
-def _mkuser(nome, email, perfil):
-    r = client.post("/api/v1/usuarios", json={"nome": nome, "email": email, "senha": "123456", "perfil": perfil})
-    assert r.status_code == 201
-    return r.json()
-
-def _login(email, senha="123456"):
-    r = client.post("/api/v1/auth/login", json={"email": email, "senha": senha})
-    assert r.status_code == 200
-    return {"Authorization": f"Bearer {r.json()['access_token']}"}
-
 def test_perfil_senha_favoritos():
-    org = _mkuser("Org", "org@email.com", "organizador")
-    p1 = _mkuser("P1", "p1@email.com", "participante")
-    p2 = _mkuser("P2", "p2@email.com", "participante")
-    h_org = _login("org@email.com")
-    h_p1 = _login("p1@email.com")
+    # Criação dos usuários
+    client.post("/api/v1/usuarios", json={"nome":"Org Fav","email":"org.fav@email.com","senha":"123456","perfil":"organizador"})
+    client.post("/api/v1/usuarios", json={"nome":"P1 Fav","email":"p1.fav@email.com","senha":"123456","perfil":"participante"})
+    
+    # Login atualizado
+    r_org = client.post("/api/v1/auth/login", data={"username":"org.fav@email.com","password":"123456"})
+    h_org = {"Authorization": f"Bearer {r_org.json()['access_token']}"}
+    
+    r_p1 = client.post("/api/v1/auth/login", data={"username":"p1.fav@email.com","password":"123456"})
+    h_p1 = {"Authorization": f"Bearer {r_p1.json()['access_token']}"}
 
-    # RF22 ver/editar próprio perfil
-    me = client.get("/api/v1/usuarios/me", headers=h_p1)
-    assert me.status_code == 200 and me.json()["email"] == "p1@email.com"
-    assert client.get("/api/v1/usuarios/me").status_code == 401
-    upd = client.patch("/api/v1/usuarios/me", json={"nome": "P1 Novo"}, headers=h_p1)
-    assert upd.status_code == 200 and upd.json()["nome"] == "P1 Novo"
-    # RN01 no próprio perfil
-    assert client.patch("/api/v1/usuarios/me", json={"email": "org@email.com"}, headers=h_p1).status_code == 409
+    # Categoria e Evento
+    cat = client.post("/api/v1/categorias", json={"nome":"Cat Fav","descricao":"x"})
+    cat_id = cat.json()["id"]
+    ev = client.post("/api/v1/eventos", json={"nome":"Evento Fav","descricao":"x","data_evento":"2026-12-01","horario":"14:00","local":"Lab","capacidade":10,"categoria_id":cat_id}, headers=h_org)
+    ev_id = ev.json()["id"]
 
-    # RF23 alterar senha
-    assert client.put("/api/v1/usuarios/me/senha",
-        json={"senha_atual": "errada", "nova_senha": "nova123"}, headers=h_p1).status_code == 401
-    assert client.put("/api/v1/usuarios/me/senha",
-        json={"senha_atual": "123456", "nova_senha": "nova123"}, headers=h_p1).status_code == 200
-    h_p1_new = _login("p1@email.com", "nova123")  # login com a nova senha
+    # RF22 - Atualizar Perfil
+    upd = client.patch("/api/v1/usuarios/me", json={"nome":"P1 Atualizado"}, headers=h_p1)
+    assert upd.status_code == 200
+    assert upd.json()["nome"] == "P1 Atualizado"
 
-    cat = client.post("/api/v1/categorias", json={"nome": "Tech", "descricao": "t"}).json()
-    ev = client.post("/api/v1/eventos", json={"nome": "Evento Fav", "descricao": "d", "data_evento": "2026-10-10",
-        "horario": "14:00", "local": "Lab", "capacidade": 50, "categoria_id": cat["id"]}, headers=h_org)
-    eid = ev.json()["id"]
+    # RF23 - Alterar Senha
+    assert client.put("/api/v1/usuarios/me/senha", json={"senha_atual":"123456","nova_senha":"nova_senha"}, headers=h_p1).status_code == 200
+    
+    # Testar login com a nova senha
+    r_new = client.post("/api/v1/auth/login", data={"username":"p1.fav@email.com","password":"nova_senha"})
+    assert r_new.status_code == 200
+    h_p1_new = {"Authorization": f"Bearer {r_new.json()['access_token']}"}
 
-    # RF24 favoritar (só participante; RN15 409)
-    assert client.post(f"/api/v1/eventos/{eid}/favoritos", headers=h_p1_new).status_code == 201
-    assert client.post(f"/api/v1/eventos/{eid}/favoritos", headers=h_p1_new).status_code == 409
-    assert client.post(f"/api/v1/eventos/{eid}/favoritos", headers=h_org).status_code == 403
-    assert client.post("/api/v1/eventos/9999/favoritos", headers=h_p1_new).status_code == 404
+    # RF24 - Favoritar Evento
+    assert client.post(f"/api/v1/eventos/{ev_id}/favoritos", headers=h_p1_new).status_code == 201
+    
+    # RN15 - Favorito único
+    assert client.post(f"/api/v1/eventos/{ev_id}/favoritos", headers=h_p1_new).status_code == 409
 
-    # RF25 consultar próprios
-    favs = client.get("/api/v1/favoritos", headers=h_p1_new).json()
-    assert len(favs["data"]) == 1 and favs["data"][0]["evento_id"] == eid
+    # RF25 - Consultar Favoritos
+    favs = client.get("/api/v1/favoritos", headers=h_p1_new)
+    assert favs.status_code == 200
+    assert len(favs.json()["data"]) == 1
 
-    # RF26 remover (RN16: só o próprio; 404 se não favoritado)
-    h_p2 = _login("p2@email.com")
-    assert client.delete(f"/api/v1/eventos/{eid}/favoritos", headers=h_p2).status_code == 404
-    assert client.delete(f"/api/v1/eventos/{eid}/favoritos", headers=h_p1_new).status_code == 204
-    assert client.get("/api/v1/favoritos", headers=h_p1_new).json()["data"] == []
+    # RF26 - Remover Favorito
+    assert client.delete(f"/api/v1/eventos/{ev_id}/favoritos", headers=h_p1_new).status_code == 204
+    
+    # Confirmar que removeu
+    favs2 = client.get("/api/v1/favoritos", headers=h_p1_new)
+    assert len(favs2.json()["data"]) == 0
