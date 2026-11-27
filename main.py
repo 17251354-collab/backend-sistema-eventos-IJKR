@@ -22,9 +22,9 @@ app = FastAPI(
     description="""
     API REST completa para o gerenciamento de eventos acadêmicos.
     
-    **Segurança:** Implementa autenticação via JWT (JSON Web Tokens) e controle de acesso baseado em perfis (Admin, Organizador, Participante).
+    Segurança: Implementa autenticação via JWT (JSON Web Tokens) e controle de acesso baseado em perfis (Admin, Organizador, Participante).
     
-    **Testes:** O projeto conta com uma suíte de testes automatizados validando regras de negócio e segurança.
+    Testes: O projeto conta com uma suíte de testes automatizados validando regras de negócio e segurança.
     """,
     version="3.0.0",
     docs_url="/docs",
