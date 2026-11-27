@@ -66,9 +66,3 @@ backend-sistema-eventos-IJKR/
 ├── services/        # Regras de negócio, RBAC e serviços da aplicação
 └── tests/           # Suíte de 15 testes automatizados (Pytest)
 
-## Instalação e Execução Local
-
-1. Clone o repositório e acesse a pasta do projeto:
-
-git clone [https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git](https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git)
-cd backend-sistema-eventos-IJKR
