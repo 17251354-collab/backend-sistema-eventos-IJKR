@@ -65,3 +65,33 @@ backend-sistema-eventos-IJKR/
 ├── schemas/         # Schemas de validação e serialização (Pydantic)
 ├── services/        # Regras de negócio, RBAC e serviços da aplicação
 └── tests/           # Suíte de 15 testes automatizados (Pytest)
+```
+
+## Instalação e Execução Local
+
+1. Clone o repositório e acesse a pasta do projeto:
+
+```bash
+git clone [https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git](https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git)
+cd backend-sistema-eventos-IJKR
+```
+
+2. Crie e ative um ambiente virtual e instale as dependências:
+
+```bash
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+3. Execute a aplicação localmente:
+
+```bash
+uvicorn main:app --reload
+```
+
+4. Execute os testes automatizados:
+
+```bash
+pytest
+```
