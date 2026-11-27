@@ -10,25 +10,25 @@ API REST completa para o gerenciamento de eventos acadêmicos, desenvolvida com 
 
 ## Links de Produção
 
-- **Repositório GitHub (v3.0.0):** https://github.com/17251354-collab/backend-sistema-eventos-IJKR
-- **API Pública (HTTPS):** https://backend-sistema-eventos-ijkr.onrender.com
-- **Documentação Swagger:** https://backend-sistema-eventos-ijkr.onrender.com/docs
+- **Repositório GitHub (v3.0.0):** [https://github.com/17251354-collab/backend-sistema-eventos-IJKR](https://github.com/17251354-collab/backend-sistema-eventos-IJKR)
+- **API Pública (HTTPS):** [https://backend-sistema-eventos-ijkr.onrender.com](https://backend-sistema-eventos-ijkr.onrender.com)
+- **Documentação Swagger:** [https://backend-sistema-eventos-ijkr.onrender.com/docs](https://backend-sistema-eventos-ijkr.onrender.com/docs)
 
 ## Evolução entre a Primeira e a Segunda Unidade
 
-Na **Primeira Unidade (v1.0)**, foi estruturada a concepção técnica e o MVP local (`localhost:8000`) com FastAPI, SQLAlchemy, Alembic, SQLite (`eventos.db`), as 6 entidades do DER (`usuarios`, `categorias`, `eventos`, `inscricoes`, `certificados`, `favoritos`) e a base inicial de rotas e JWT.
+Na Primeira Unidade (v1.0), foi estruturada a concepção técnica e o MVP local (`[http://127.0.0.1:8000](http://127.0.0.1:8000)`) com FastAPI, SQLAlchemy, Alembic, SQLite (`eventos.db`), as 6 entidades do DER (`usuarios`, `categorias`, `eventos`, `inscricoes`, `certificados`, `favoritos`) e a base inicial de rotas e JWT.
 
-Na **Segunda Unidade (v3.0.0)**, o projeto evoluiu nos seguintes pontos:
+Na Segunda Unidade (v3.0.0), o projeto evoluiu nos seguintes pontos:
 
 - **Persistência em Nuvem (SQLite → Turso/libSQL):** Migração do arquivo local `eventos.db` para o banco relacional em nuvem Turso (libSQL), garantindo persistência real dos registros em ambiente publicado sem expor credenciais no repositório.
-- **Deploy em Produção com HTTPS:** Publicação contínua da API e do Swagger no Render (`backend-sistema-eventos-ijkr.onrender.com`).
-- **Suíte de Testes Automatizados (Pytest):** Evolução dos testes manuais no Swagger para 15 testes automatizados (`tests/`), validando segurança (`401`/`403`), regras de negócio (`RN01`–`RN16`) e fluxos funcionais (`RF01`–`RF26`).
-- **Consolidação do RBAC e Qualidade de Código:** Aplicação integral da matriz de permissões por perfil (`Admin`, `Organizador`, `Participante`), separação modular de responsabilidades (`api/v1`, `core`, `database`, `models`, `schemas`, `services`) e padronização das respostas HTTP e documentação OpenAPI.
+- **Deploy em Produção com HTTPS:** Publicação contínua da API e do Swagger no Render (`[https://backend-sistema-eventos-ijkr.onrender.com](https://backend-sistema-eventos-ijkr.onrender.com)`).
+- **Suíte de Testes Automatizados (Pytest):** Evolução dos testes manuais no Swagger para 15 testes automatizados (`tests/`), validando segurança (401/403), regras de negócio (RN01–RN16) e fluxos funcionais (RF01–RF26).
+- **Consolidação do RBAC e Qualidade de Código:** Aplicação integral da matriz de permissões por perfil (Admin, Organizador, Participante), separação modular de responsabilidades (`api/v1`, `core`, `database`, `models`, `schemas`, `services`) e padronização das respostas HTTP e documentação OpenAPI.
 
 ## Matriz de Permissões (RBAC)
 
 | Funcionalidade | Admin | Organizador | Participante |
-| :--- | :---: | :---: | :---: |
+| :--- | :--- | :--- | :--- |
 | Cadastrar usuário (`POST /api/v1/usuarios`) | SIM | NÃO | SIM |
 | Consultar usuários (`GET /api/v1/usuarios`) | SIM | NÃO | NÃO |
 | Cadastrar categoria (`POST /api/v1/categorias`) | SIM | NÃO | NÃO |
@@ -58,5 +58,5 @@ Na **Segunda Unidade (v3.0.0)**, o projeto evoluiu nos seguintes pontos:
 1. Clone o repositório e acesse a pasta do projeto:
 
 ```bash
-git clone [https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git](https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git)
+git clone https://github.com/17251354-collab/backend-sistema-eventos-IJKR.git
 cd backend-sistema-eventos-IJKR
