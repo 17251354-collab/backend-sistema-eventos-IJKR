@@ -65,4 +65,3 @@ backend-sistema-eventos-IJKR/
 ├── schemas/         # Schemas de validação e serialização (Pydantic)
 ├── services/        # Regras de negócio, RBAC e serviços da aplicação
 └── tests/           # Suíte de 15 testes automatizados (Pytest)
-
